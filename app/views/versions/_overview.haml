@@ -1,0 +1,33 @@
+- committed_on = Version.where('effective_date < ?', version.effective_date).last.effective_date rescue (Date.today - 1.year)
+- orphan_revisions = Changeset.where('committed_on > ? and committed_on < ?',committed_on,version.effective_date).joins('left join changesets_issues ci on ci.changeset_id = changesets.id').where('ci.issue_id is null')
+- if orphan_revisions.size > -1
+  %small
+    (
+    = link_to "show orphaned revs", orphan_revisions_path(@project,version,committed_on,version.effective_date)
+    )
+- if version.completed?
+  %p= format_date(version.effective_date)
+- elsif version.effective_date
+  %p
+    %strong= due_date_distance_in_words(version.effective_date)
+    (#{format_date(version.effective_date)})
+%p= h version.description
+- if version.custom_field_values.any?
+  %ul
+    - version.custom_field_values.each do |custom_value|
+      - if custom_value.value.present?
+        %li
+          = h custom_value.custom_field.name
+          \: #{h show_value(custom_value)}
+- if version.issues_count > 0
+  = progress_bar([version.closed_pourcent, version.completed_pourcent], :width => '40em', :legend => ('%0.0f%' % version.completed_pourcent))
+  %p.progress-info
+    = link_to(l(:label_x_issues, :count => version.issues_count),                                              |
+      project_issues_path(version.project, :status_id => '*', :fixed_version_id => version, :set_filter => 1)) |
+    -#
+    \ 
+    (#{link_to_if(version.closed_issues_count > 0, l(:label_x_closed_issues_abbr, :count => version.closed_issues_count), project_issues_path(version.project, :status_id => 'c', :fixed_version_id => version, :set_filter => 1))}
+    —
+    \#{link_to_if(version.open_issues_count > 0, l(:label_x_open_issues_abbr, :count => version.open_issues_count), project_issues_path(version.project, :status_id => 'o', :fixed_version_id => version, :set_filter => 1))})
+- else
+  %p.progress-info= l(:label_roadmap_no_issues)

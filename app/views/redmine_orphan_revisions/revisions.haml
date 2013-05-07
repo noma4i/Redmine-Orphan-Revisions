@@ -1,0 +1,27 @@
+%h2.vesrion
+  = link_to_version @version, :name => version_anchor(@version)
+
+- if @revisions.present?
+  %h3 Not linked revisions
+  %table.list.changesets
+    %thead
+      %tr
+        %th #
+        %th= l(:label_date)
+        %th= l(:field_author)
+        %th= l(:field_comments)
+    %tbody
+      - line_num = 1
+      - @revisions.each do |changeset|
+        - next if changeset.comments.include?('Merge branch')
+        - next if changeset.comments.include?('Merge master')
+        %tr{:class => "changeset #{cycle 'odd', 'even'}"}
+          = content_tag(:td, :class => 'id') do
+            = link_to_revision(changeset, changeset.repository)
+          %td.committed_on= format_time(changeset.committed_on)
+          %td.author= h truncate(changeset.author.to_s, :length => 30)
+          %td.comments= textilizable(truncate_at_line_break(changeset.comments))
+        - line_num += 1
+- else
+  %center
+    Nothing to link
