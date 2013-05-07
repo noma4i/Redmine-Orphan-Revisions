@@ -5,7 +5,7 @@ Redmine::Plugin.register :redmine_orphan_revisions do
   author 'Alex Tsirel'
   description 'Show not linked revisions'
   version '0.0.2'
-  url 'https://github.com/noma4i/orphans'
+  url 'https://github.com/noma4i/Redmine-Orphan-Revisions'
   author_url 'https://github.com/noma4i'
 
   project_module :orphan_revisions do
