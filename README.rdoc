@@ -1,3 +1,14 @@
-= redmine_orphan_revisions
+= Redmine Orphan Revisions
 
-Description goes here
+Simple plugin to view list of not linked revisions per version.
+
+1. Open Roadmap
+2. If Version has revisions in it's timeline but they are not linked to actual issues you will see link *show orphaned revs*
+
+
+*Notes:
+  - Revisions with text like "merge branch" and "merge master" are skipped.
+
+
+= enjoy!
+
