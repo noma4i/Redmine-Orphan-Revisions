@@ -5,7 +5,7 @@ class RedmineOrphanRevisionsController < ApplicationController
     @project = Project.find(params[:project_id])
     @version = Version.find(params[:version])
 
-    issues_in_release = Issue.where(:fixed_version_id => @version.id).map(&:id).join(',') + "0"
+    issues_in_release = Issue.where(:fixed_version_id => @version.id).pluck(:id).join(',') + "0"
     revisions = Changeset.where("committed_on > ? and committed_on < ?",params[:from],params[:to]).joins("left join changesets_issues ci on ci.changeset_id = changesets.id")
 
     if issues_in_release.size > 0
